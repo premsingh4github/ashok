@@ -8,7 +8,3 @@ Running Server :
 	php -q c:\path\server.php
 
 4. Using browser, navigate to index.php location to open chat page, have fun!
-
-
-
-http://www.saaraan.com
