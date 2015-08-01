@@ -132,14 +132,31 @@ while (true) {
 
 
 			$tst_msg = json_decode($received_text); //json decode 
-			$user_name = $tst_msg->name; //sender name
+			$user_id = $tst_msg->name; //sender name
 			$user_message = $tst_msg->message; //message text
 			$user_color = $tst_msg->color; //color
-			
-			// //prepare data to be sent to client
-			// $response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
-
-			$text = json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color));
+			$key = array_keys($changed, $changed_socket);
+            $position = $key[0];
+			$user_message  .= $position;
+			if(array_search($user_id,$clientAllocation)){
+				
+			    if(array_search($user_id,$clientAllocation) != $position){
+			        $clientAllocation[$position] = $user_id;
+			        $user_message  .= "--"."old one from new system";
+			    } 
+			    else{
+    					
+			    	$user_message  .= "--"."old one from old system";
+			    } 
+				foreach (array_keys($clientAllocation,$user_id) as $value) {
+                               $user_message  .= "..". $value ."..";
+                           }
+			}
+			else{
+			    $clientAllocation[$position] = $user_id;
+			    $user_message  .= "--New person";
+			}
+			$text = json_encode(array('type'=>'usermsg', 'name'=>$user_id, 'message'=>$user_message, 'color'=>$user_color));
 				$b1 = 0x80 | (0x1 & 0x0f);
 				$length = strlen($text);
 				
@@ -160,6 +177,9 @@ while (true) {
 				{
 					@socket_write($changed_socket,$response_text,strlen($response_text));
 				}
+				foreach (array_keys($clientAllocation,$user_id) as $value) {
+                               @socket_write($clients[$value],$response_text,strlen($response_text));
+                           }
 			break 2; //exist this loop
 		}
 		
