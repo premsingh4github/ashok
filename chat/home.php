@@ -62,9 +62,9 @@ $(document).ready(function(){
 		
 		//prepare json data
 		var msg = {
-		message: mymessage,
-		name: myname,
-		color : '<?php echo $colours[$user_colour]; ?>'
+		data: mymessage,
+		clientId: myname,
+		type : 'addMember'
 		};
 		//convert and send data to server
 		websocket.send(JSON.stringify(msg));
@@ -75,11 +75,11 @@ $(document).ready(function(){
 		console.log(ev);
 		var msg = JSON.parse(ev.data); //PHP sends Json data
 		var type = msg.type; //message type
-		var umsg = msg.message; //message text
-		var uname = msg.name; //user name
-		var ucolor = msg.color; //color
+		var umsg = msg.data; //message text
+		var uname = msg.clientId; //user name
+		var ucolor = '007AFF'; //color
 
-		if(type == 'usermsg') 
+		if(type == 'addMember') 
 		{
 			$('#message_box').append("<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"+uname+"</span> : <span class=\"user_message\">"+umsg+"</span></div>");
 		}
